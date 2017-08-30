@@ -141,13 +141,6 @@ func (c *conn) UpdateAuthRequest(id string, updater func(a storage.AuthRequest) 
 		}
 
 		a, err := updater(r)
-		fmt.Printf("UPDATE claims: %v", a.Claims)
-		fmt.Println("")
-		fmt.Printf("UPDATE pclaims: %v", a.PClaims)
-		fmt.Println("")
-		fmt.Printf("UPDATE pclaims string: %s", a.PClaims.JsonMarshal())
-		fmt.Println("")
-
 
 		if err != nil {
 			return err
@@ -207,7 +200,6 @@ func getAuthRequest(q querier, id string) (a storage.AuthRequest, err error) {
 		return a, fmt.Errorf("select auth request: %v", err)
 	}
 	a.PClaims.JsonUnMarshal(pydioClaims)
-	fmt.Printf("Authrequest Geet: %v", a.PClaims)
 	return a, nil
 }
 

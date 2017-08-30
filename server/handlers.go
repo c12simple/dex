@@ -407,7 +407,6 @@ func (s *Server) finalizeLogin(identity connector.Identity, authReq storage.Auth
 		GroupPath:     identity.GroupPath,
 	}
 
-
 	updater := func(a storage.AuthRequest) (storage.AuthRequest, error) {
 		a.LoggedIn = true
 		a.Claims = claims
@@ -654,7 +653,6 @@ func (s *Server) handleAuthCode(w http.ResponseWriter, r *http.Request, client s
 		}
 		return
 	}
-
 	if authCode.RedirectURI != redirectURI {
 		s.tokenErrHelper(w, errInvalidRequest, "redirect_uri did not match URI from initial request.", http.StatusBadRequest)
 		return

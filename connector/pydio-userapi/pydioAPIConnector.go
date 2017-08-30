@@ -45,16 +45,16 @@ func (p *pydioAPIConnector) Open(logger logrus.FieldLogger) (connector.Connector
 func (p *pydioAPIConnector) Login(ctx context.Context, s connector.Scopes, username, password string) (identity connector.Identity, validPassword bool, err error){
 	p.logger.Printf("Login request for User:%s Password:%s", username, password)
 	identity = connector.Identity{
-		UserID: 	"username",
-		Username: 	"User Number 001",
-		Email:		"u001@pydio.com",
-		EmailVerified: true,
-		DisplayName: 	"",
-		GroupPath: 		"",
-		AuthSource: "pydioapi",
-		Roles:"",
-		Groups:			[]string{},
-		ConnectorData: 	nil,
+		UserID: 			"username",
+		Username: 			"User Number 001",
+		Email:				"u001@pydio.com",
+		EmailVerified: 		true,
+		DisplayName: 			"",
+		GroupPath: 			"",
+		AuthSource: 		"pydioapi",
+		Roles: 				[]string{"defaultRole"},
+		Groups:				[]string{},
+		ConnectorData: 		nil,
 	}
 
 	return identity, true, nil

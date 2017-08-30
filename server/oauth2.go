@@ -243,28 +243,40 @@ func (a audience) MarshalJSON() ([]byte, error) {
 }
 
 type idTokenClaims struct {
-	Issuer           string   `json:"iss"`
-	Subject          string   `json:"sub"`
-	Audience         audience `json:"aud"`
-	Expiry           int64    `json:"exp"`
-	IssuedAt         int64    `json:"iat"`
-	AuthorizingParty string   `json:"azp,omitempty"`
-	Nonce            string   `json:"nonce,omitempty"`
 
-	AccessTokenHash string `json:"at_hash,omitempty"`
+	Issuer           	string   	`json:"iss"`
 
-	Email         string `json:"email,omitempty"`
-	EmailVerified *bool  `json:"email_verified,omitempty"`
+	// base64(json.Unmarshal(json { userid, connector-id, sub-connector-id})
+	// For example: json{ usertest , pydio, openldap}
+	// json:sub: CgVweWRpbxIFcHlkaW8
+	// This is a unique id of Users and can be use for authorization
+	// https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-token-and-claims
+	Subject          	string   	`json:"sub"`
 
-	Groups []string `json:"groups,omitempty"`
+	Audience         	audience 	`json:"aud"`
+	Expiry           	int64    	`json:"exp"`
+	IssuedAt         	int64    	`json:"iat"`
+	AuthorizingParty 	string   	`json:"azp,omitempty"`
+	Nonce            	string   	`json:"nonce,omitempty"`
+	AccessTokenHash 	string 		`json:"at_hash,omitempty"`
+	Email         		string 		`json:"email,omitempty"`
+	EmailVerified 		*bool  		`json:"email_verified,omitempty"`
+	Groups 				[]string 	`json:"groups,omitempty"`
+	Name 				string 		`json:"name,omitempty"`
 
-	Name string `json:"name,omitempty"`
+	// ===================================
+	// Claims for Pydio with "pydio" scope
+	// ===================================
+	AuthSource 			string 		`json:"authsource,omitempty"`
+	DisplayName 		string 		`json:"displayname,omitempty"`
 
-	// Pydio
-	AuthSource 			string `json:"authsource,omitempty"`
-	DisplayName 		string `json:"displayname,omitempty"`
-	Roles 				string `json:"roles,omitempty"`
-	GroupPath 			string `json:"grouppath,omitempty"`
+	// ** Roles is an array of string instead of comma-separator string
+	// https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-token-and-claims
+	Roles 				[]string 	`json:"roles,omitempty"`
+
+	// Group Path
+	// example: /DC=lab.DC=py/OU=company
+	GroupPath 			string 		`json:"grouppath,omitempty"`
 }
 
 func (s *Server) newIDToken(clientID string, claims storage.Claims, scopes []string, nonce, accessToken, connID string) (idToken string, expiry time.Time, err error) {
@@ -289,6 +301,7 @@ func (s *Server) newIDToken(clientID string, claims storage.Claims, scopes []str
 	sub := &internal.IDTokenSubject{
 		UserId: claims.UserID,
 		ConnId: connID,
+		SubConnId: claims.AuthSource,
 	}
 
 	subjectString, err := internal.Marshal(sub)
